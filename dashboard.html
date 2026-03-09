@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - FundFlow.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Load FontAwesome via CDN for avatar icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans min-h-screen flex">
+    
+    <!-- Sidebar Web Component -->
+    <app-sidebar></app-sidebar>
+
+    <div class="flex-grow flex flex-col min-h-screen">
+        
+        <!-- Private Header Navbar -->
+        <header class="bg-white border-b border-gray-100 py-4 px-8 flex justify-between items-center sticky top-0 z-40">
+            <h2 class="text-xl font-bold tracking-tight text-black md:hidden">FundFlow.</h2>
+            <div class="hidden md:block">
+                <!-- Empty spacer for desktop -->
+            </div>
+            
+            <div class="flex items-center gap-5 relative">
+                <button class="text-gray-400 hover:text-black transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                </button>
+                
+                <!-- Profile Dropdown Trigger -->
+                <button id="profile-menu-btn" class="flex items-center gap-3 focus:outline-none group">
+                    <div class="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm transition-transform group-hover:scale-105" id="user-avatar-initial"></div>
+                    <div class="text-sm font-semibold text-black hidden sm:block transition-colors group-hover:text-gray-600">
+                        <span id="user-display-name">...</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] ml-1 text-gray-400 transition-transform" id="profile-chevron"></i>
+                    </div>
+                </button>
+
+                <!-- Profile Dropdown Menu -->
+                <div id="profile-dropdown" class="absolute right-0 top-1.5 mt-10 w-56 bg-white border border-gray-100 rounded-xl shadow-[0_10px_40px_rgb(0,0,0,0.08)] py-2 hidden z-50 origin-top-right transform transition-all opacity-0 scale-95">
+                    <div class="px-5 py-3 border-b border-gray-50 mb-1">
+                        <p class="text-xs text-gray-500 font-medium mb-0.5">Signed in as</p>
+                        <p id="user-display-email" class="text-sm font-bold text-black truncate w-full"></p>
+                    </div>
+                    <a href="#" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors font-medium">Profile settings</a>
+                    <a href="#" class="block px-5 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors font-medium">Support</a>
+                    <div class="border-t border-gray-50 mt-1 pt-1">
+                        <button id="logout-btn" class="w-full text-left px-5 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors font-semibold flex items-center gap-2">
+                            <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Log out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-extrabold tracking-tight text-black">Dashboard</h1>
+                <a href="transactions.html?add=true" class="bg-black text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-md hover:bg-gray-800 transition shadow-lg hover:-translate-y-0.5 inline-flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Add Transaction
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Total Balance Widget -->
+                <div class="bg-black text-white rounded-2xl p-6 shadow-xl transition hover:-translate-y-1 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full -mr-10 -mt-10 pointer-events-none"></div>
+                    <h3 class="text-gray-400 text-sm font-medium mb-1">Total Balance</h3>
+                    <div id="dash-total-balance" class="text-3xl font-extrabold mb-4 LKR">Rs. 0.00</div>
+                    <div class="text-sm text-green-400 font-semibold flex items-center gap-1">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                        Live calculation
+                    </div>
+                </div>
+
+                <!-- Income Widget -->
+                <div class="bg-white border border-gray-100 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition hover:-translate-y-1">
+                    <div class="flex justify-between items-start mb-1">
+                        <h3 class="text-gray-500 text-sm font-medium">Income (This Month)</h3>
+                        <div class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center">
+                            <i class="fa-solid fa-arrow-down text-green-600 text-sm"></i>
+                        </div>
+                    </div>
+                    <div id="dash-income" class="text-2xl font-bold text-black mb-1 LKR">Rs. 0.00</div>
+                </div>
+
+                <!-- Expense Widget -->
+                <div class="bg-white border border-gray-100 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition hover:-translate-y-1">
+                    <div class="flex justify-between items-start mb-1">
+                        <h3 class="text-gray-500 text-sm font-medium">Expenses (This Month)</h3>
+                        <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center">
+                            <i class="fa-solid fa-arrow-up text-red-600 text-sm"></i>
+                        </div>
+                    </div>
+                    <div id="dash-expense" class="text-2xl font-bold text-black mb-1 LKR">Rs. 0.00</div>
+                </div>
+            </div>
+
+            <div class="bg-white border border-gray-100 rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                <div class="flex justify-between items-center mb-6 border-b border-gray-50 pb-4">
+                    <h3 class="text-lg font-bold text-black">Recent Transactions</h3>
+                    <a href="transactions.html" class="text-sm font-semibold text-gray-400 hover:text-black transition">View all →</a>
+                </div>
+                <!-- Transactions List Target -->
+                <div id="dash-recent-transactions" class="min-h-[100px] flex items-center justify-center">
+                    <div class="animate-pulse flex space-x-4">
+                        <div class="rounded-full bg-gray-200 h-10 w-10"></div>
+                        <div class="flex-1 space-y-4 py-1">
+                            <div class="h-2 bg-gray-200 rounded w-3/4"></div>
+                            <div class="space-y-3">
+                                <div class="h-2 bg-gray-200 rounded"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/components/app-sidebar.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>
